@@ -14,7 +14,8 @@ type Config struct {
 
 func CreateTwitterApi() (api *anaconda.TwitterApi) {
 	var conf Config
-	if _, err := toml.DecodeFile("config.tml", &conf); err != nil {
+	_, err := toml.DecodeFile("config.tml", &conf)
+	if err != nil {
 		panic(err)
 	}
 
