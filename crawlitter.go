@@ -25,5 +25,7 @@ func main() {
 	api := anaconda.NewTwitterApi(conf.AccessToken, conf.AccessTokenSecret)
 
 	user, _ := api.GetUsersShow("_eurk", nil)
-	fmt.Println(user)
+
+	userGraph := GetGraphById(api, user.Id)
+	fmt.Println(userGraph)
 }
