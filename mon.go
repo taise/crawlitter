@@ -6,7 +6,6 @@ import (
 	"github.com/BurntSushi/toml"
 
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 const Database = "crawlitter"
@@ -15,34 +14,36 @@ type mongoConf struct {
 	Host string
 }
 
-func buildMongoUri() string {
+type Mongo struct {
+	Host     string
+	Database string
+}
+
+func (self *Mongo) initialize() {
 	var conf mongoConf
 	_, err := toml.DecodeFile("database.tml", &conf)
 	if err != nil {
 		log.Panic(err)
 	}
-	return "mongodb://" + conf.Host
+
+	self.Host = conf.Host
+	self.Database = Database
 }
 
-func getSession() *mgo.Session {
-	session, err := mgo.Dial(buildMongoUri())
+func NewMongo() *Mongo {
+	mongo := &Mongo{}
+	mongo.initialize()
+	return mongo
+}
+
+func (self *Mongo) buildUri() string {
+	return "mongodb://" + self.Host
+}
+
+func (self *Mongo) GetSession() *mgo.Session {
+	session, err := mgo.Dial(self.buildUri())
 	if err != nil {
 		log.Panic(err)
 	}
 	return session
-}
-
-func GetCollection(name string) *mgo.Collection {
-	session := getSession()
-	defer session.Close()
-
-	return session.DB(Database).C(name)
-}
-
-func ExistsUserID(collection mgo.Collection, user_id int64) bool {
-	n, err := collection.Find(bson.M{"user_id": user_id}).Count()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return n > 0
 }
