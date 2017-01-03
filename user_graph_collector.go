@@ -39,6 +39,7 @@ func (self *UserGraphCollector) existsUserID(user_id int64) bool {
 }
 
 func (self *UserGraphCollector) breadthFirstSearch(ids []int64) int {
+	// TODO
 	return 1
 }
 
@@ -51,12 +52,13 @@ func (self *UserGraphCollector) getGraphById(id int64) (userGraph UserGraph) {
 func (self *UserGraphCollector) Collect(user_id int64) {
 	if self.existsUserID(user_id) {
 		log.Print(fmt.Sprintf("[SKIP] user_id: %d", user_id))
-	} else {
-		userGraph := self.getGraphById(user_id)
-		err := self.Collection.Insert(&userGraph)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Print("[SAVE] " + userGraph.ToLogFormat())
+		return
 	}
+
+	userGraph := self.getGraphById(user_id)
+	err := self.Collection.Insert(&userGraph)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Print("[SAVE] " + userGraph.ToLogFormat())
 }
