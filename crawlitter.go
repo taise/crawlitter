@@ -2,17 +2,16 @@ package main
 
 import "log"
 
+const (
+	screen_name     = "katyperry" // The most popular Twitter user
+	collection_name = "user_graphs"
+)
+
 func main() {
 	api := CreateTwitterApi()
-	user, _ := api.GetUsersShow("_eurk", nil)
+	user, _ := api.GetUsersShow(screen_name, nil)
 
-	session := GetSession()
-	defer session.Close()
-
-	var db string = "crawlitter"
-	var collection_name string = "user_graphs"
-
-	collection := session.DB(db).C(collection_name)
+	collection := GetCollection(collection_name)
 
 	if ExistsUserID(*collection, user.Id) {
 		log.Print("skip")
