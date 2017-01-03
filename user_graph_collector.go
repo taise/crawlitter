@@ -49,6 +49,13 @@ func (self *UserGraphCollector) getGraphById(id int64) (userGraph UserGraph) {
 	return UserGraph{id, following.Ids, followers.Ids, time.Now()}
 }
 
+func (self *UserGraphCollector) save(userGraph UserGraph) {
+	err := self.Collection.Insert(&userGraph)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func (self *UserGraphCollector) Collect(user_id int64) {
 	if self.existsUserID(user_id) {
 		log.Print(fmt.Sprintf("[SKIP] user_id: %d", user_id))
@@ -56,9 +63,6 @@ func (self *UserGraphCollector) Collect(user_id int64) {
 	}
 
 	userGraph := self.getGraphById(user_id)
-	err := self.Collection.Insert(&userGraph)
-	if err != nil {
-		log.Fatal(err)
-	}
+	self.save(userGraph)
 	log.Print("[SAVE] " + userGraph.ToLogFormat())
 }
