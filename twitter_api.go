@@ -5,6 +5,8 @@ import (
 	"github.com/ChimeraCoder/anaconda"
 )
 
+const twitter_tml = "config/twitter.tml"
+
 type twitterConf struct {
 	ConsumerKey       string
 	ConsumerSecret    string
@@ -14,7 +16,7 @@ type twitterConf struct {
 
 func CreateTwitterApi() (api *anaconda.TwitterApi) {
 	var conf twitterConf
-	_, err := toml.DecodeFile("config.tml", &conf)
+	_, err := toml.DecodeFile(twitter_tml, &conf)
 	if err != nil {
 		panic(err)
 	}

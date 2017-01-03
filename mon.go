@@ -8,26 +8,29 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-const Database = "crawlitter"
+const (
+	mongo_tml = "config/mongo.tml"
+	db        = "crawlitter"
+)
 
 type mongoConf struct {
 	Host string
 }
 
 type Mongo struct {
-	Host     string
-	Database string
+	Host string
+	DB   string
 }
 
 func (self *Mongo) initialize() {
 	var conf mongoConf
-	_, err := toml.DecodeFile("database.tml", &conf)
+	_, err := toml.DecodeFile(mongo_tml, &conf)
 	if err != nil {
 		log.Panic(err)
 	}
 
 	self.Host = conf.Host
-	self.Database = Database
+	self.DB = db
 }
 
 func NewMongo() *Mongo {
