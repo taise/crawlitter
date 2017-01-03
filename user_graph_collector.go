@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -11,13 +12,6 @@ import (
 )
 
 const collection_name = "user_graphs"
-
-type UserGraph struct {
-	User_id   int64 ",omitempty"
-	Following []int64
-	Followers []int64
-	Got_at    time.Time
-}
 
 type UserGraphCollector struct {
 	Api        *anaconda.TwitterApi
@@ -55,16 +49,14 @@ func (self *UserGraphCollector) getGraphById(id int64) (userGraph UserGraph) {
 }
 
 func (self *UserGraphCollector) Collect(user_id int64) {
-
 	if self.existsUserID(user_id) {
-		log.Print("skip")
+		log.Print(fmt.Sprintf("[SKIP] user_id: %d", user_id))
 	} else {
 		userGraph := self.getGraphById(user_id)
-		log.Print(userGraph)
-
 		err := self.Collection.Insert(&userGraph)
 		if err != nil {
 			log.Fatal(err)
 		}
+		log.Print("[SAVE] " + userGraph.ToLogFormat())
 	}
 }
