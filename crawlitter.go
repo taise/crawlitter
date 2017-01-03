@@ -1,13 +1,12 @@
 package main
 
-const (
-	screen_name     = "katyperry" // The most popular Twitter user
-	collection_name = "user_graphs"
-)
+const screen_name = "katyperry" // The most popular Twitter user
 
 func main() {
-	api := CreateTwitterApi()
-	user, _ := api.GetUsersShow(screen_name, nil)
+	userGraphCollector := NewUserGraphCollector()
 
-	CollectUserGraph(api, user.Id)
+	// Get first user_id for graph search
+	user, _ := userGraphCollector.Api.GetUsersShow(screen_name, nil)
+
+	userGraphCollector.Collect(user.Id)
 }
